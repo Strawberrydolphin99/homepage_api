@@ -1,0 +1,308 @@
+:root {
+    --font-size-main: 11px;
+    --font-size-small: 9px;
+    --gray-text: rgba(255, 255, 255, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html { 
+    width: 100%; height: 100%; overflow: hidden; 
+    background-color: #363636; font-family: "Andale Mono", monospace;
+}
+
+#noise-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+}
+
+header {
+    position: fixed; top: 0; width: 100%; padding: 25px;
+    display: flex; justify-content: space-between;
+    z-index: 3000; pointer-events: none;
+}
+
+.logo, .contact { 
+    pointer-events: auto; text-decoration: none; color: white; 
+    font-weight: bold; font-size: var(--font-size-main);
+}
+
+.logo {
+    font-weight: 900;
+}
+
+footer { 
+    position: fixed; bottom: 25px; left: 25px;
+    display: flex; flex-direction: column; gap: 4px;
+    z-index: 1000; color: var(--gray-text);
+    font-size: var(--font-size-small);
+    text-transform: lowercase; letter-spacing: 1px;
+    pointer-events: none;
+}
+
+#canvas { 
+    position: relative; z-index: 1; width: 100vw; height: 100vh; 
+    cursor: grab; overflow: hidden;
+}
+
+#image-world {
+    position: absolute; width: 8000px; height: 8000px;
+    top: 0; left: 0; transform-origin: 0 0;
+    will-change: transform;
+    transition: transform 0.6s cubic-bezier(0.2, 0.49, 0.32, 0.99);
+}
+
+.image-container { 
+    position: absolute; display: flex; flex-direction: column; gap: 12px; 
+    cursor: move; z-index: 10;
+    transition: transform 0.3s ease-out;
+}
+
+/* Effekt beim Verschieben */
+.image-container:active {
+    transform: scale(1.03) !important;
+    cursor: grabbing;
+}
+
+.image-container img { 
+    width: 100%; height: auto; 
+    user-select: none; -webkit-user-drag: none;
+    transition: filter 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 0 60px rgba(0,0,0,0.95);
+}
+
+/* Hover-Effekt: Invertieren + Glow */
+.image-container:hover img { 
+    filter: invert(1); 
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+}
+
+.image-caption {
+    color: white; font-size: var(--font-size-small);
+    text-transform: lowercase; opacity: 0.7;
+}
+
+#about-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 4000; opacity: 0; visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+#about-overlay.active { opacity: 1; visibility: visible; }
+
+.about-content {
+    max-width: 400px; color: white; text-align: left;
+    font-size: var(--font-size-main); line-height: 1.8; padding: 40px;
+}
+
+/* category HUD vertical stack on the right (no underlay) */
+#category-bar {
+    position: fixed;
+    bottom: 60px;
+    right: 25px; /* align with header contact */
+    width: auto;
+    height: auto;
+    padding: 6px 4px 6px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* align children to the right edge */
+    gap: 10px;
+    z-index: 5000;
+    pointer-events: auto;
+    /* remove underlay */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* imprint pad specific positioning (left corner, aligned with category bar) */
+.imprint-pad {
+    position: fixed;
+    left: 65px; /* keep x-axis */
+    bottom: 60px; /* align with category bar height */
+    z-index: 5000;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #888888;
+    font-size: 11px;
+    text-align: left;
+}
+
+#connection-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 4500; /* below the HUD but above images */
+    pointer-events: none;
+}
+
+#connection-layer defs { pointer-events: none; }
+
+#connection-layer line {
+    stroke: rgba(180,200,220,0.22);
+    stroke-width: 1;
+    stroke-linecap: round;
+    filter: url(#glow);
+}
+
+/* dim / highlight visuals for category filtering */
+.image-container.dimmed img {
+    filter: blur(6px) brightness(0.28) saturate(0.6);
+    opacity: 0.45;
+    transition: filter 0.45s ease, opacity 0.45s ease;
+}
+
+.image-container.highlighted {
+    transform: scale(1.25);
+    z-index: 6000 !important;
+    transition: transform 0.35s ease;
+}
+
+/* prevent no-category images from being scaled */
+.image-container.no-category.highlighted {
+    transform: scale(1) !important;
+}
+
+.image-container.highlighted img {
+    filter: none;
+    box-shadow: 0 0 80px rgba(255,255,255,0.18), 0 12px 40px rgba(255,255,255,0.06);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* glow effect for me01.png */
+.image-container.glow-me img {
+    box-shadow: 0 0 100px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.15), 0 12px 50px rgba(255,255,255,0.12);
+}
+
+.category-tab.active {
+    background: rgba(255,255,255,0.06);
+    color: #ffffff;
+    transform: scale(1.08);
+    box-shadow: 0 18px 54px rgba(255,255,255,0.18), 0 0 40px rgba(255,255,255,0.08) inset;
+    border-color: rgba(255,255,255,0.18);
+}
+.category-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 6px 8px;
+    height: auto;
+    background: rgba(0,0,0,0.85);
+    color: #e6fff8;
+    text-transform: lowercase;
+    font-size: 11px;
+    font-family: "Andale Mono", monospace;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    user-select: none;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.category-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: none;
+}
+
+.category-tab span {display:block;text-align:center;font-size:11px;line-height:1}
+
+/* ensure each pad sits flush to the right inside the stack */
+.category-tab { align-self: flex-end; }
+
+/* imprint overlay - central bottom with transparent surrounding */
+/* imprint overlay: vertical column above imprint pad on left side */
+#imprint-overlay {
+    position: fixed;
+    left: 65px;
+    bottom: 115px; /* above imprint pad which is now at 60px */
+    width: auto;
+    max-width: 200px;
+    z-index: 5200;
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+#imprint-overlay.active {
+    opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.imprint-content {
+    background: transparent;
+    color: #999999; /* grey text */
+    padding: 0;
+    border-radius: 0;
+    font-size: 8px;
+    font-weight: 300;
+    line-height: 1.5;
+    box-shadow: none;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.imprint-content h3, .imprint-content p { color: #999999; margin: 0 0 0.6em 0; }
+.imprint-content h3 { font-weight: 700; margin-bottom: 0.4em; }
+
+/* contact overlay: positioned below contact link on the right */
+#contact-overlay {
+    position: fixed;
+    right: 25px;
+    top: 70px;
+    width: auto;
+    max-width: 300px;
+    z-index: 5200;
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+#contact-overlay.active {
+    opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.contact-content {
+    background: transparent;
+    color: #999999;
+    padding: 0;
+    border-radius: 0;
+    font-size: var(--font-size-main);
+    line-height: 1.8;
+    box-shadow: none;
+    text-align: right;
+}
+
+.contact-label {
+    font-size: 8px;
+    font-weight: 300;
+    color: #999999;
+    margin: 0 0 0.3em 0;
+}
+
+.contact-email {
+    font-size: var(--font-size-main);
+    color: #999999;
+    margin: 0 0 0.6em 0;
+}
+
+.contact-address {
+    font-size: var(--font-size-main);
+    color: #999999;
+    margin: 0 0 0.2em 0;
+}
+
+.contact-link {
+    color: #999999;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+    color: #ffffff;
+}

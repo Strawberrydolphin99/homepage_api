@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alina pinardi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="noise-bg"></canvas>
+
+    <header>
+        <a href="#" class="logo" id="logo-trigger">alina pinardi</a>
+        <a href="#" class="contact" id="contact-trigger">contact</a>
+    </header>
+
+    <main id="canvas">
+        <div id="image-world"></div>
+    </main>
+
+    <div id="category-bar">
+        <div class="category-tab" data-category="architecture" title="Architecture">architecture</div>
+        <div class="category-tab" data-category="scenography" title="Scenography">scenography</div>
+        <div class="category-tab" data-category="interior" title="Interior">interior</div>
+        <div class="category-tab" data-category="object" title="Object">object</div>
+    </div>
+
+    <!-- imprint pad (left bottom) -->
+    <div id="imprint-pad" class="category-tab imprint-pad" title="Imprint">imprint</div>
+
+    <!-- connection lines drawn as SVG overlay -->
+    <svg id="connection-layer">
+        <defs>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                <feMerge>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- about overlay (for logo click) -->
+    <div id="about-overlay">
+        <div class="about-content">
+            alina pinardi ist eine visuelle gestalterin und fotografin aus zürich. 
+            fokus auf architektur, licht und minimalistische strukturen.
+            <br><br>
+            (click anywhere to close)
+        </div>
+    </div>
+
+    <!-- imprint overlay (central bottom) -->
+    <div id="imprint-overlay">
+        <div class="imprint-content">
+            <p>
+                This website presents work and research by alina pinardi architecture, Zurich UID: CHE-298.972.608
+                <br><br>
+                All information is provided without guarantee of accuracy or completeness.
+                No liability is assumed for external links.
+                All content, including texts, images, drawings, and spatial concepts, is protected by copyright.
+                Reproduction or use in any form requires prior written permission.
+                Personal data is handled in accordance with applicable data protection laws.
+                No data is shared with third parties unless legally required.
+            </p>
+        </div>
+    </div>
+
+    <!-- contact overlay -->
+    <div id="contact-overlay">
+        <div class="contact-content">
+            <p class="contact-label">contact</p>
+            <p class="contact-email"><a href="mailto:info@alinapinardi.com" class="contact-link">info@alinapinardi.com</a></p>
+            <br>
+            <p class="contact-label">adress</p>
+            <p class="contact-address">Schreinerstrasse 62</p>
+            <p class="contact-address">8004 Zurich Switzerland</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
