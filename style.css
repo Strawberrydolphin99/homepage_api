@@ -1,14 +1,45 @@
 :root {
     --font-size-main: 11px;
     --font-size-small: 9px;
-    --gray-text: rgba(255, 255, 255, 0.4);
+    --gray-text: rgba(0, 0, 0, 0.4);
+}
+
+/* Loading spinner */
+#loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease;
+}
+
+#loading-spinner.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#progress-pie {
+    width: 50px;
+    height: 50px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body, html { 
     width: 100%; height: 100%; overflow: hidden; 
-    background-color: #363636; font-family: "Andale Mono", monospace;
+    background-color: #ffffff; font-family: "Andale Mono", monospace;
 }
 
 #noise-bg {
@@ -23,7 +54,7 @@ header {
 }
 
 .logo, .contact { 
-    pointer-events: auto; text-decoration: none; color: white; 
+    pointer-events: auto; text-decoration: none; color: black; 
     font-weight: bold; font-size: var(--font-size-main);
 }
 
@@ -49,7 +80,7 @@ footer {
     position: absolute; width: 8000px; height: 8000px;
     top: 0; left: 0; transform-origin: 0 0;
     will-change: transform;
-    transition: transform 0.6s cubic-bezier(0.2, 0.49, 0.32, 0.99);
+    transition: transform 0.6s ease-in-out;
 }
 
 .image-container { 
@@ -78,24 +109,8 @@ footer {
 }
 
 .image-caption {
-    color: white; font-size: var(--font-size-small);
+    color: black; font-size: var(--font-size-small);
     text-transform: lowercase; opacity: 0.7;
-}
-
-#about-overlay {
-    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 4000; opacity: 0; visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-    cursor: pointer;
-    pointer-events: none;
-}
-
-#about-overlay.active { opacity: 1; visibility: visible; }
-
-.about-content {
-    max-width: 400px; color: white; text-align: left;
-    font-size: var(--font-size-main); line-height: 1.8; padding: 40px;
 }
 
 /* category HUD vertical stack on the right (no underlay) */
@@ -127,26 +142,22 @@ footer {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    color: #888888;
+    color: #333333 !important;
     font-size: 11px;
     text-align: left;
 }
 
-#connection-layer {
+.credit-pad {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 4500; /* below the HUD but above images */
-    pointer-events: none;
-}
-
-#connection-layer defs { pointer-events: none; }
-
-#connection-layer line {
-    stroke: rgba(180,200,220,0.22);
-    stroke-width: 1;
-    stroke-linecap: round;
-    filter: url(#glow);
+    left: 20px; /* left of imprint */
+    bottom: 60px; /* same height as imprint */
+    z-index: 5000;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #333333 !important;
+    font-size: 11px;
+    text-align: left;
 }
 
 /* dim / highlight visuals for category filtering */
@@ -173,17 +184,24 @@ footer {
     transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
+/* force dimmed state for overlays - overrides highlighted */
+.image-container.force-dimmed img {
+    filter: blur(6px) brightness(0.28) saturate(0.6) !important;
+    opacity: 0.45 !important;
+}
+
 /* glow effect for me01.png */
 .image-container.glow-me img {
     box-shadow: 0 0 100px rgba(255,255,255,0.25), 0 0 60px rgba(255,255,255,0.15), 0 12px 50px rgba(255,255,255,0.12);
 }
 
 .category-tab.active {
-    background: rgba(255,255,255,0.06);
-    color: #ffffff;
-    transform: scale(1.08);
-    box-shadow: 0 18px 54px rgba(255,255,255,0.18), 0 0 40px rgba(255,255,255,0.08) inset;
-    border-color: rgba(255,255,255,0.18);
+    background: transparent;
+    color: black;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    text-decoration: underline;
 }
 .category-tab {
     display: inline-flex;
@@ -192,13 +210,13 @@ footer {
     min-width: 44px;
     padding: 6px 8px;
     height: auto;
-    background: rgba(0,0,0,0.85);
-    color: #e6fff8;
+    background: transparent;
+    color: black;
     text-transform: lowercase;
     font-size: 11px;
     font-family: "Andale Mono", monospace;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 6px;
+    border: none;
+    border-radius: 0;
     cursor: pointer;
     transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     user-select: none;
@@ -236,7 +254,7 @@ footer {
 
 .imprint-content {
     background: transparent;
-    color: #999999; /* grey text */
+    color: #333333; /* dark text */
     padding: 0;
     border-radius: 0;
     font-size: 8px;
@@ -247,8 +265,68 @@ footer {
     word-wrap: break-word;
 }
 
-.imprint-content h3, .imprint-content p { color: #999999; margin: 0 0 0.6em 0; }
+.imprint-content h3, .imprint-content p { color: #333333; margin: 0 0 0.6em 0; }
 .imprint-content h3 { font-weight: 700; margin-bottom: 0.4em; }
+
+/* credit overlay */
+#credit-overlay {
+    position: fixed;
+    left: 20px;
+    bottom: 115px; /* above credit pad */
+    width: auto;
+    max-width: 200px;
+    z-index: 5200;
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+#credit-overlay.active {
+    opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.credit-content {
+    background: transparent;
+    color: #333333;
+    padding: 0;
+    border-radius: 0;
+    font-size: 8px;
+    font-weight: 300;
+    line-height: 1.5;
+    box-shadow: none;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.credit-content p { color: #333333; margin: 0 0 0em 0; }
+
+/* about overlay: positioned below alina pinardi link on the left */
+#about-overlay {
+    position: fixed;
+    left: 25px;
+    top: 70px;
+    width: auto;
+    max-width: 300px;
+    z-index: 5200;
+    pointer-events: none;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+#about-overlay.active {
+    opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.about-content {
+    background: transparent;
+    color: #333333;
+    padding: 0;
+    border-radius: 0;
+    font-size: var(--font-size-main);
+    line-height: 1.8;
+    box-shadow: none;
+    text-align: left;
+}
 
 /* contact overlay: positioned below contact link on the right */
 #contact-overlay {
@@ -269,7 +347,7 @@ footer {
 
 .contact-content {
     background: transparent;
-    color: #999999;
+    color: #333333;
     padding: 0;
     border-radius: 0;
     font-size: var(--font-size-main);
@@ -281,28 +359,103 @@ footer {
 .contact-label {
     font-size: 8px;
     font-weight: 300;
-    color: #999999;
+    color: #333333;
     margin: 0 0 0.3em 0;
 }
 
 .contact-email {
     font-size: var(--font-size-main);
-    color: #999999;
+    color: #333333;
     margin: 0 0 0.6em 0;
 }
 
 .contact-address {
     font-size: var(--font-size-main);
-    color: #999999;
+    color: #333333;
     margin: 0 0 0.2em 0;
 }
 
 .contact-link {
-    color: #999999;
+    color: #333333;
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 .contact-link:hover {
-    color: #ffffff;
+    color: #000000;
+}
+
+/* MOBILE RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    :root {
+        --font-size-main: 10px;
+        --font-size-small: 8px;
+    }
+
+    header {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .logo, .contact {
+        font-size: var(--font-size-main);
+    }
+
+    footer {
+        bottom: 15px;
+        left: 15px;
+        font-size: var(--font-size-small);
+    }
+
+    #image-world {
+        width: 4000px;
+        height: 4000px;
+    }
+
+    .image-container {
+        gap: 8px;
+    }
+
+    .image-container img {
+        width: 100%;
+    }
+
+    .image-caption {
+        font-size: 7px !important;
+        gap: 6px;
+    }
+
+    #category-bar {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .category-tab {
+        font-size: 9px;
+        padding: 6px 10px;
+    }
+
+    /* Overlays mobile friendly */
+    #about-overlay,
+    #contact-overlay,
+    #imprint-overlay,
+    #credit-overlay {
+        width: 90vw;
+        max-width: none;
+        height: 80vh;
+        max-height: none;
+        padding: 40px 20px 20px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 8px;
+    }
+
+    .overlay-content {
+        font-size: var(--font-size-small);
+    }
+
+    .overlay-content p {
+        font-size: var(--font-size-small);
+    }
 }

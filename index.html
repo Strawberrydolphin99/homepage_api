@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>alina pinardi</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3CradialGradient id='sphereGradient' cx='35%' cy='35%'%3E%3Cstop offset='0%' style='stop-color:%23e8e8e8;stop-opacity:1' /%3E%3Cstop offset='100%' style='stop-color:%239b9b9b;stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3C!-- shadow --%3E%3Ccircle cx='50' cy='52' r='38' fill='%23000000' opacity='0.4'/%3E%3C!-- main circle with gradient --%3E%3Ccircle cx='50' cy='48' r='38' fill='url(%23sphereGradient)'/%3E%3C/svg%3E">
 </head>
 <body>
     <canvas id="noise-bg"></canvas>
+    
+    <!-- Loading spinner -->
+    <div id="loading-spinner">
+        <div class="progress-container">
+            <svg id="progress-pie" viewBox="0 0 100 100">
+                <!-- Background circle outline -->
+                <circle cx="50" cy="50" r="35" fill="none" stroke="#e0e0e0" stroke-width="1.5"></circle>
+                <!-- Progress fill wedge -->
+                <path id="progress-wedge" d="M 50 50 L 50 15 A 35 35 0 0 1 50 15 Z" fill="black"></path>
+            </svg>
+        </div>
+    </div>
 
     <header>
         <a href="#" class="logo" id="logo-trigger">alina pinardi</a>
@@ -19,35 +32,23 @@
     </main>
 
     <div id="category-bar">
-        <div class="category-tab" data-category="architecture" title="Architecture">architecture</div>
-        <div class="category-tab" data-category="scenography" title="Scenography">scenography</div>
-        <div class="category-tab" data-category="interior" title="Interior">interior</div>
+        <div class="category-tab" data-category="building" title="Building">building</div>
+        <div class="category-tab" data-category="installation" title="Installation">installation</div>
         <div class="category-tab" data-category="object" title="Object">object</div>
+        <div class="category-tab" data-category="research" title="Research">research</div>
+        <div class="category-tab" data-category="index" title="Index">index</div>
     </div>
 
     <!-- imprint pad (left bottom) -->
     <div id="imprint-pad" class="category-tab imprint-pad" title="Imprint">imprint</div>
-
-    <!-- connection lines drawn as SVG overlay -->
-    <svg id="connection-layer">
-        <defs>
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-        </defs>
-    </svg>
+    
+    <!-- credit pad (left bottom, left of imprint) -->
+    <div id="credit-pad" class="category-tab credit-pad" title="Credit">credit</div>
 
     <!-- about overlay (for logo click) -->
     <div id="about-overlay">
         <div class="about-content">
-            alina pinardi ist eine visuelle gestalterin und fotografin aus zürich. 
-            fokus auf architektur, licht und minimalistische strukturen.
-            <br><br>
-            (click anywhere to close)
+            <p>Alina Pinardi is an architect and designer with a Master's degree in Architecture from ETH Zurich. Her practice maintains a strong focus on process, developing projects from concept to building. She explores how materials, form, and function interact, balancing precision and research with conceptual experimentation. She investigates the tension between functionality, atmosphere, and perception to produce work that is formally refined, spatially sensitive, and emotionally resonant.</p>
         </div>
     </div>
 
@@ -67,13 +68,35 @@
         </div>
     </div>
 
+    <!-- credit overlay -->
+    <div id="credit-overlay">
+        <div class="credit-content">
+            <p>Photography</p>
+            <p>Most images on this site are by Arthur Heck.</p>
+            <br>
+            <p>Design Collaborations</p>
+            <p>Jannik Achenbach, co-designed select projects</p>
+            <br>
+            <p>Renderings</p>
+            <p>Jannik Achenbach, Renderings for select projects</p>
+            <p>Leo Müller, Renderings for select projects</p>
+        </div>
+    </div>
+
+    <!-- about overlay -->
+    <div id="about-overlay">
+        <div class="about-content">
+            <p>alinapinardi is an architectural practice working across space, material, and process. The work spans building, adaptive transformations, and spatial installations, with a focus on how environments influence perception, behavior, and emotional experience. Projects are developed through research and material investigation, balancing conceptual clarity with sensory depth.</p>
+            <br>
+            <p>Alina Pinardi is an architect and designer holding a Master's degree in Architecture from ETH Zurich. She works across design and all phases of the building process, from concept to realization.</p>
+        </div>
+    </div>
+
     <!-- contact overlay -->
     <div id="contact-overlay">
         <div class="contact-content">
-            <p class="contact-label">contact</p>
             <p class="contact-email"><a href="mailto:info@alinapinardi.com" class="contact-link">info@alinapinardi.com</a></p>
             <br>
-            <p class="contact-label">adress</p>
             <p class="contact-address">Schreinerstrasse 62</p>
             <p class="contact-address">8004 Zurich Switzerland</p>
         </div>
